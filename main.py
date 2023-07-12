@@ -77,6 +77,7 @@ with gr.Blocks(css="footer {visibility: hidden}") as demo:
         response, context = process_user_message(message, context)
         context.append({'role':'assistant', 'content':f"{response}"})
         chat_history.append((message, response))
+        print(chat_history)
         return "", chat_history
 
     msg.submit(respond, [msg, chatbot], [msg, chatbot])
