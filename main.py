@@ -105,7 +105,7 @@ def get_completion_from_messages(messages):
         print("No function activated")
         return api_response.choices[0].message["content"]
 
-
+# read google doc
 professional_information = read_my_doc()
 if professional_information:
     print("\ndoc is read successfully!\n")
@@ -121,7 +121,7 @@ def process_user_message(user_input, all_messages):
     messages = [
         {'role': 'system', 'content': system_message},
         {'role': 'user', 'content': f"{delimiter}{user_input}{delimiter}"},
-        {'role': 'assistant', 'content': f"Relevant information about Amin:\n{professional_information}"}
+        {'role': 'assistant', 'content': f"you are a personal assistant"}
     ]
 
     final_response = get_completion_from_messages(all_messages + messages)
@@ -137,12 +137,12 @@ def root():
     return {"message": "hello from chatbot! Redirect to /chatbot"}
 
 
-context = [{'role':'system', 'content':"You are a Personal Assistant"}]
+context = [{'role': 'assistant', 'content': f"Relevant information about Amin:\n{professional_information}"}]
 chat_history = []
 
 print("\n===chatbot started======\n")
 with gr.Blocks(css="footer {visibility: hidden}") as demo:
-    chatbot = gr.Chatbot([["","Hello from Amin's Personal Assistant! Do you have any specific question?"]])
+    chatbot = gr.Chatbot([["...","Hello from Amin's Personal Assistant! Do you have any specific question?"]])
     msg = gr.Textbox()
     clear = gr.ClearButton([msg, chatbot])
 
