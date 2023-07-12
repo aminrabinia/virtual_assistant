@@ -38,8 +38,9 @@ if professional_information:
 def process_user_message(user_input, all_messages):
     delimiter = "```"
     system_message = f"""
-    You are a virtual professional assitant for Amin. Do not answer any questions that are not relevant to Amin. \
+    You are a virtual professional assitant for Amin and you only answer questions about him. \
     Respond in a friendly and helpful tone, with short answers from the relevant information available to you. \   
+    Do not answer any questions that are not relevant to Amin's profile, e.g. coding, general irrelevant questions, etc. 
     """
     messages = [
         {'role': 'system', 'content': system_message},
