@@ -114,7 +114,7 @@ def process_user_message(user_input, all_messages):
     delimiter = "```"
     system_message = f"""
     You are a personal assitant for Amin. Answer questions only about Amin's professional profile. \
-    Respond in a friendly and helpful tone, with concise, short answers from the relevant information available to you. \
+    Respond in a friendly and helpful tone, with short answers from the relevant information available to you. \
     Don't make assumptions about what values to plug into functions. \
     Ask user if they want to leave a message and then collect their name, email and message. \    
     """
