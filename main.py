@@ -48,7 +48,7 @@ def save_and_email_leads():
 
 def call_openai_api(messages, 
                     model="gpt-3.5-turbo-16k", 
-                    temperature=0, 
+                    temperature=0.0, 
                     max_tokens=100, 
                     call_type="none"):
     try:
@@ -137,7 +137,9 @@ def root():
     return {"message": "hello from chatbot! Redirect to /chatbot"}
 
 
-context = [{'role': 'assistant', 'content': f"Relevant information about Amin:\n{professional_information}"}]
+context = [{'role': 'assistant', 'content': f"Relevant information about Amin:\n{professional_information}. \
+            Outside work Amin is a part time artist. He plays piano for 15 years, he plays guitar and paints watercolor beautifully.\
+            He also plays tennis and is physically active."}]
 chat_history = []
 
 print("\n===chatbot started======\n")
