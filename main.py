@@ -1,9 +1,11 @@
 
+import signal
 from fastapi import FastAPI
 import gradio as gr
 import os
 import openai
 import uvicorn
+from emails import send_out_email
 from read_doc import read_my_doc
 from dotenv import load_dotenv, find_dotenv
 
@@ -54,6 +56,7 @@ def process_user_message(user_input, all_messages):
     return final_response, all_messages
     
 
+
 app = FastAPI()
 
 @app.get('/')
@@ -66,9 +69,20 @@ context = [{'role': 'assistant', 'content': f"Relevant information about Amin:\n
             He also plays tennis and is physically active."}]
 chat_history = []
 
+# Define a signal handler function
+def handle_termination(signal, frame):
+    # Print the content of chat_history
+    send_out_email(chat_history)
+    # Exit the application
+    exit(0)
+
+# Register the signal handler for SIGTERM
+signal.signal(signal.SIGTERM, handle_termination)
+
 print("\n===chatbot started======\n")
 with gr.Blocks(css="footer {visibility: hidden}") as demo:
-    chatbot = gr.Chatbot([["...","Hello from Amin's Personal Assistant! Do you have any specific question?"]])
+    chatbot = gr.Chatbot([["","Hello from Amin's Personal Assistant! \nDo you have any specific question about Amin's background or experience?\
+                           \n (--Please note that Amin will receive a summary of this conversation--)"]])
     msg = gr.Textbox()
     clear = gr.ClearButton([msg, chatbot])
 
@@ -82,7 +96,6 @@ with gr.Blocks(css="footer {visibility: hidden}") as demo:
 
     msg.submit(respond, [msg, chatbot], [msg, chatbot])
 gr.mount_gradio_app(app, demo, path="/chatbot")
-
 
 
 if __name__ == "__main__":
