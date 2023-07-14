@@ -78,8 +78,6 @@ def handle_termination(signal, frame):
     # Exit the application
     exit(0)
 
-# Register the signal handler for SIGTERM
-signal.signal(signal.SIGTERM, handle_termination)
 
 print("\n===chatbot started======\n")
 with gr.Blocks(css="footer {visibility: hidden}") as demo:
@@ -101,7 +99,15 @@ gr.mount_gradio_app(app, demo, path="/chatbot")
 
 
 if __name__ == "__main__":
+
     print("\n======api started to redirect=====\n")
+
+    # Register the signal handler for SIGTERM  handles Ctrl-C locally
+    signal.signal(signal.SIGTERM, handle_termination)
+
     uvicorn.run(app, host='0.0.0.0', port=8080)
+else:
+    # handles Cloud Run container termination
+    signal.signal(signal.SIGTERM, handle_termination)
 
 
