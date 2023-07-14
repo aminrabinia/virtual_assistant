@@ -72,7 +72,9 @@ chat_history = []
 # Define a signal handler function
 def handle_termination(signal, frame):
     # Print the content of chat_history
+    print("Signal Received\nTermination Activated\n")
     send_out_email(chat_history)
+    print("Email sent out!")
     # Exit the application
     exit(0)
 
