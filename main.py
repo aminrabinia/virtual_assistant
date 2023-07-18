@@ -3,6 +3,7 @@ import signal
 from fastapi import FastAPI
 import gradio as gr
 import os
+import atexit
 import openai
 import uvicorn
 from emails import send_out_email
@@ -70,13 +71,14 @@ context = [{'role': 'assistant', 'content': f"Relevant information about Amin:\n
 chat_history = []
 
 # Define a signal handler function
-def handle_termination(signal, frame):
+def handle_termination(signal=None, frame=None):
     # Print the content of chat_history
     print("Signal Received\nTermination Activated\n")
     send_out_email(chat_history)
     print("Email sent out!")
-    # Exit the application
-    exit(0)
+
+# handles Cloud Run container termination
+signal.signal(signal.SIGTERM, handle_termination)
 
 
 print("\n===chatbot started======\n")
@@ -103,11 +105,9 @@ if __name__ == "__main__":
     print("\n======api started to redirect=====\n")
 
     # Register the signal handler for SIGTERM  handles Ctrl-C locally
-    signal.signal(signal.SIGTERM, handle_termination)
+    # signal.signal(signal.SIGINT, handle_termination)
+    atexit.register(handle_termination)
 
     uvicorn.run(app, host='0.0.0.0', port=8080)
-else:
-    # handles Cloud Run container termination
-    signal.signal(signal.SIGTERM, handle_termination)
 
 
