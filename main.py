@@ -68,18 +68,28 @@ def root():
 context = [{'role': 'assistant', 'content': f"Relevant information about Amin:\n{professional_information}. \
             Outside work Amin is a part time artist. He plays piano for 15 years, he plays guitar and paints watercolor beautifully.\
             He also plays tennis and is physically active."}]
-chat_history = []
 
 # Define a signal handler function
 def handle_termination(signal=None, frame=None):
     # Print the content of chat_history
     print("Signal Received\nTermination Activated\n")
-    send_out_email(chat_history)
+    print("Chat History in the termination function:", gchat_his)
+    send_out_email(gchat_his)
     print("Email sent out!")
 
 # handles Cloud Run container termination
 signal.signal(signal.SIGTERM, handle_termination)
 
+
+def respond(message, chat_history):
+    global context
+    global gchat_his 
+    response, context = process_user_message(message, context)
+    context.append({'role':'assistant', 'content':f"{response}"})
+    chat_history.append((message, response))
+    print(chat_history)
+    gchat_his= chat_history
+    return "", chat_history
 
 print("\n===chatbot started======\n")
 with gr.Blocks(css="footer {visibility: hidden}") as demo:
@@ -87,14 +97,6 @@ with gr.Blocks(css="footer {visibility: hidden}") as demo:
                            \n (--Please note that Amin will receive a summary of this conversation--)"]])
     msg = gr.Textbox()
     clear = gr.ClearButton([msg, chatbot])
-
-    def respond(message, chat_history):
-        global context
-        response, context = process_user_message(message, context)
-        context.append({'role':'assistant', 'content':f"{response}"})
-        chat_history.append((message, response))
-        print(chat_history)
-        return "", chat_history
 
     msg.submit(respond, [msg, chatbot], [msg, chatbot])
 gr.mount_gradio_app(app, demo, path="/chatbot")
